@@ -122,7 +122,7 @@ namespace z3 {
     */
     class context {
         Z3_context m_ctx;
-        static void error_handler(Z3_context c, Z3_error_code e) { /* do nothing */ }
+        static void error_handler(Z3_context, Z3_error_code) { /* do nothing */ }
         void init(config & c) {
             m_ctx = Z3_mk_context_rc(c);
             Z3_set_error_handler(m_ctx, error_handler);
@@ -288,7 +288,11 @@ namespace z3 {
         void check_error() const { m_ctx->check_error(); }
         friend void check_context(object const & a, object const & b);
     };
+#ifdef DEBUG
     inline void check_context(object const & a, object const & b) { assert(a.m_ctx == b.m_ctx); }
+#else
+    inline void check_context(object const &, object const &) { }
+#endif
 
     class symbol : public object {
         Z3_symbol m_sym;
